@@ -110,9 +110,7 @@ def implied_rate(price):
     Works on scalars and pandas Series alike.
     """
     ## TODO: Implement this function as specified in the docstring above.
-    raise NotImplementedError(
-        "Implement implied_rate (see HOMEWORK INSTRUCTIONS at the top of this file)"
-    )
+    return 100 - price
 
 
 def latest_prices_by_contract(df, as_of=None):
@@ -155,9 +153,10 @@ def solve_post_meeting_rate(r_avg, r_pre, meeting_end):
     has ``.day`` and ``.days_in_month`` attributes.)
     """
     ## TODO: Implement this function as specified in the docstring above.
-    raise NotImplementedError(
-        "Implement solve_post_meeting_rate (see HOMEWORK INSTRUCTIONS at the top of this file)"
-    )
+    meeting_end = pd.Timestamp(meeting_end)
+    d = meeting_end.day
+    n = meeting_end.days_in_month
+    return (r_avg * n - r_pre * d) / (n - d)
 
 
 def move_probability(r_pre, r_post, step=0.25):
@@ -175,9 +174,19 @@ def move_probability(r_pre, r_post, step=0.25):
     - ``"p_no_change"``: 1 - p_move
     """
     ## TODO: Implement this function as specified in the docstring above.
-    raise NotImplementedError(
-        "Implement move_probability (see HOMEWORK INSTRUCTIONS at the top of this file)"
-    )
+    change = r_post - r_pre
+    if change > 0:
+        direction = "hike"
+    elif change < 0:
+        direction = "cut"
+    else:
+        direction = "no change"
+    p_move = min(max(abs(change) / step, 0.0), 1.0)
+    return {
+        "direction": direction,
+        "p_move": p_move,
+        "p_no_change": 1 - p_move,
+    }
 
 
 def current_target_range(r_pre, step=0.25):
